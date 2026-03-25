@@ -205,7 +205,8 @@
               <div class="username">{{ currentUser?.username || 'Guest' }}</div>
               <div class="role">{{ roleName || '-' }}</div>
             </div>
-            <img :src="currentUser?.profile_image_url || defaultAvatar" class="avatar" alt="User" />
+            <img :src="avatarUrl" class="avatar" alt="User" />
+            <!-- <img :src="currentUser?.profile_image_url || defaultAvatar" class="avatar" alt="User" /> -->
           </div>
         </div>
       </header>
@@ -233,6 +234,10 @@ const currentUser = ref(null)
 
 const { locale: i18nLocale, t } = useI18n()
 const locale = computed(() => i18nLocale.value)
+
+const avatarUrl = computed(() => {
+  return currentUser.value?.profile_image_url || defaultAvatar
+})
 
 const openGroups = ref({
   management: false,
@@ -272,25 +277,26 @@ const closeSidebar = () => {
 }
 
 const closeOnMobile = () => {
-  if (isMobile.value) {
-    closeSidebar()
-  }
+  if (isMobile.value) closeSidebar()
 }
 
 const logout = () => {
   localStorage.removeItem('user')
+  localStorage.removeItem('token')
   window.location.href = '/'
 }
 
 const roleName = computed(() => currentUser.value?.role?.name || '')
-const isAdmin = computed(() => roleName.value === 'admin')
-const isStaffOrUser = computed(() => ['staff', 'user'].includes(roleName.value))
+const isAdmin = computed(() => roleName.value.toLowerCase() === 'admin')
+const isStaffOrUser = computed(() =>
+  ['staff', 'user'].includes(roleName.value.toLowerCase())
+)
 
 const canSeeAllMenus = computed(() => isAdmin.value)
 const canSeeTestOnly = computed(() => isStaffOrUser.value)
 
 onMounted(() => {
-   updateIsMobile()
+  updateIsMobile()
   window.addEventListener('resize', updateIsMobile)
 
   const savedTheme = localStorage.getItem('app_theme')
@@ -304,10 +310,6 @@ onMounted(() => {
 
   const userData = localStorage.getItem('user')
   currentUser.value = userData ? JSON.parse(userData) : null
-
-  if (currentUser.value?.role?.name) {
-    currentUser.value.role.name = currentUser.value.role.name.toLowerCase()
-  }
 
   if (isMobile.value) {
     isSidebarOpen.value = false
