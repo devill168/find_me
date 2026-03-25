@@ -333,32 +333,36 @@ export default {
     },
 
     async sendLink() {
-      this.forgotLoading = true;
-      this.forgotResultMessage = "";
-      this.forgotResultType = "";
+    this.forgotLoading = true;
+    this.forgotResultMessage = "";
+    this.forgotResultType = "";
 
-      try {
-        const res = await axios.post("http://127.0.0.1:8000/api/forgot-password", {
-          email: this.email,
-        });
+    const forgotRequest = axios.post("http://127.0.0.1:8000/api/forgot-password", {
+      email: this.email,
+    });
 
-        this.forgotResultType = "success";
-        this.forgotResultMessage =
-          res.data.message || this.t("login.resetLinkSent");
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        this.showForgotModal = false;
-        this.showForgotResultModal = true;
-        this.email = "";
-      } catch (err) {
-        this.forgotResultType = "error";
-        this.forgotResultMessage =
-          err?.response?.data?.message || this.t("login.resetLinkFailed");
+    this.showForgotModal = false;
+    this.forgotLoading = false;
 
-        this.showForgotResultModal = true;
-      } finally {
-        this.forgotLoading = false;
-      }
-    },
+    try {
+      const res = await forgotRequest;
+
+      this.forgotResultType = "success";
+      this.forgotResultMessage =
+        res.data.message || this.t("login.resetLinkSent");
+
+      this.showForgotResultModal = true;
+      this.email = "";
+    } catch (err) {
+      this.forgotResultType = "error";
+      this.forgotResultMessage =
+        err?.response?.data?.message || this.t("login.resetLinkFailed");
+
+      this.showForgotResultModal = true;
+    }
+  },
 
     openForgotModal() {
       this.email = "";
