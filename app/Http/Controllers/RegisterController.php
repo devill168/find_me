@@ -21,7 +21,7 @@ class RegisterController extends Controller
                 "role_name" => $u->role ? $u->role->name : null,
                 "status" => $u->status,
                 "profile_image_url" => $u->profile_image
-                    ? asset('storage/' . $u->profile_image)
+                    ? url(Storage::url($u->profile_image))
                     : null,
             ];
         });
@@ -73,7 +73,7 @@ class RegisterController extends Controller
                 'role_id' => $user->role_id,
                 'role_name' => $user->role?->name,
                 'status' => $user->status,
-                'profile_image_url' => $path ? asset('storage/'.$path) : null,
+                'profile_image_url' => $path ? url(Storage::url($path)) : null,
             ],
         ], 201);
     }
@@ -139,7 +139,7 @@ class RegisterController extends Controller
                 'role_name' => $user->role?->name,
                 'status' => $user->status,
                 'profile_image_url' => $user->profile_image
-                    ? asset('storage/'.$user->profile_image)
+                    ? url(Storage::url($user->profile_image))
                     : null,
             ]
         ]);
