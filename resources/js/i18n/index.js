@@ -6,7 +6,7 @@ const messages = {
       title: 'Ministry Of Health',
       home: 'Home',
       find_location: 'Find Location',
-      location: 'Location',
+      location: 'Address',
       provinces: 'Provinces',
       districts: 'Districts',
       commune: 'Commune',
